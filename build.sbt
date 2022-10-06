@@ -7,22 +7,22 @@ lazy val root = project
     version := "0.1.0-SNAPSHOT",
     developers := List( // TODO: replace the following developer by your team developers
       Developer1(
-        id    = "Gumgumju",
-        name  = "Zhenyu ZHU",
-        email = "zhenyu.zhu@edu.esiee.fr",
-        url   = url("https://github.com/GumgumJu")
+        id1    = "Gumgumju",
+        name1  = "Zhenyu ZHU",
+        email1 = "zhenyu.zhu@edu.esiee.fr",
+        url1   = url("https://github.com/GumgumJu")
       ),
       Developer2(
-        id    = "Hao-Li-lih",
-        name  = "Hao LI",
-        email = "alplhlh@gmail.com",
-        url   = url("https://github.com/Hao-Li-lih")
+        id2    = "Hao-Li-lih",
+        name2  = "Hao LI",
+        email2 = "alplhlh@gmail.com",
+        url2   = url("https://github.com/Hao-Li-lih")
       ),
       Developer3(
-        id    = "yijun0321",
-        name  = "Yijun LIU",
-        email = "yijun.liu@edu.esiee.fr",
-        url   = url("https://github.com/yijun0321")
+        id3    = "yijun0321",
+        name3  = "Yijun LIU",
+        email4 = "yijun.liu@edu.esiee.fr",
+        url4   = url("https://github.com/yijun0321")
       )
     ),
     scalaVersion := scala3Version,
