@@ -3,22 +3,22 @@ val scala3Version = "3.2.0"
 lazy val root = project
   .in(file("."))
   .settings(
-    name := "My beautiful project", // TODO: name your project
+    name := "serialization", // TODO: name your project
     version := "0.1.0-SNAPSHOT",
     developers := List( // TODO: replace the following developer by your team developers
-      Developer1(
+      Developer(
         id    = "Gumgumju",
         name  = "Zhenyu ZHU",
         email = "zhenyu.zhu@edu.esiee.fr",
         url   = url("https://github.com/GumgumJu")
       ),
-      Developer2(
+      Developer(
         id    = "Hao-Li-lih",
         name  = "Hao LI",
         email = "alplhlh@gmail.com",
         url   = url("https://github.com/Hao-Li-lih")
       ),
-      Developer3(
+      Developer(
         id    = "yijun0321",
         name  = "Yijun LIU",
         email = "yijun.liu@edu.esiee.fr",
