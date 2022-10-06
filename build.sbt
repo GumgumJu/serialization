@@ -6,19 +6,19 @@ lazy val root = project
     name := "My beautiful project", // TODO: name your project
     version := "0.1.0-SNAPSHOT",
     developers := List( // TODO: replace the following developer by your team developers
-      Developer(
+      Developer1(
         id    = "Gumgumju",
         name  = "Zhenyu ZHU",
         email = "zhenyu.zhu@edu.esiee.fr",
         url   = url("https://github.com/GumgumJu")
-      )
-      Developer(
+      ),
+      Developer2(
         id    = "Hao-Li-lih",
         name  = "Hao LI",
         email = "alplhlh@gmail.com",
         url   = url("https://github.com/Hao-Li-lih")
-      )
-      Developer(
+      ),
+      Developer3(
         id    = "yijun0321",
         name  = "Yijun LIU",
         email = "john.doe@gmail.com",
