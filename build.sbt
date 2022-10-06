@@ -14,7 +14,7 @@ lazy val root = project
       ),
       Developer(
         id    = "Hao-Li-lih",
-        name  = "Hao LI",
+        name = "Hao LI",
         email = "alplhlh@gmail.com",
         url   = url("https://github.com/Hao-Li-lih")
       ),
