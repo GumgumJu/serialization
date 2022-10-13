@@ -6,8 +6,9 @@ import scala.util.Try
 
 //Interface
 case class Input(data: String, offset: Int) {
-  def current(n: Int): String = ???
-  def next(n: Int): Input = ???
+  def current(n: Int): String = data.drop(offset).take(n)
+
+  def next(n: Int): Input = copy(offset = offset + n)
 }
 
 type Maybe[A] = Try[(A, Input)]
@@ -27,14 +28,16 @@ object PseudobinSerde{
       blank.concat(value.toString)
     }
 
-    override def deserialize(data: Input): Maybe[Int] = ???
+    override def deserialize(data: Input): Maybe[Int] = {
+
+    }
   }
 
 //  val SHORT = new PseudobinSerde[Int] {
 //    override def serialize(value: A): String = ???
 //    override def deserialize(data: Input): Maybe[A] = ???
 //  }
-//
+
 //  val LONG = new PseudobinSerde[Int] {
 //    override def serialize(value: A): String = ???
 //    override def deserialize(data: Input): Maybe[A] = ???
