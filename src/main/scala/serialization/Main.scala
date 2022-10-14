@@ -1,6 +1,6 @@
 package serialization
 
-import scala.util.Try
+import scala.util.{Failure, Success, Try}
 
 
 
@@ -29,12 +29,17 @@ object PseudobinSerde{
     }
 
     override def deserialize(data: Input): Maybe[Int] = {
-
+      val message : String = data.current(11)
+      val tryINT :Maybe[Int] = Try(message.trim.toInt,data)
+      tryINT
     }
   }
 
 //  val SHORT = new PseudobinSerde[Int] {
-//    override def serialize(value: A): String = ???
+//    override def serialize(value: A): String = {
+//
+//    }
+//
 //    override def deserialize(data: Input): Maybe[A] = ???
 //  }
 
