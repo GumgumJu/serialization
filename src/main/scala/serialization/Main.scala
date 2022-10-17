@@ -35,8 +35,9 @@ object PseudobinSerde{
     }
   }
 
-    override def serialize(value: Short): String = {
+
   val SHORT   = new PseudobinSerde[Short] {
+    override def serialize(value: Short): String = {
       val size = value.toString.length
       val blank :String= " " * (6-size)
       blank.concat(value.toString)
