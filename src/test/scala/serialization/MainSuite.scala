@@ -25,15 +25,29 @@ class MainSuite extends munit.FunSuite {
     print(obtained)
   }
 
-  test("SHORT(positive) to Pseudobin") {
+  test("SHORT(positif) to Pseudobin") {
     val obtained = PseudobinSerde.SHORT.serialize(42)
     val expected = "    42"
     assertEquals(obtained, expected)
   }
 
-  test("SHORT(negative) to Pseudobin") {
+  test("SHORT(negatif) to Pseudobin") {
     val obtained = PseudobinSerde.SHORT.serialize(-42)
     val expected = "   -42"
+    assertEquals(obtained, expected)
+  }
+
+  test("Pseudobin to SHORT(positif) success") {
+    val test : Input = Input("    42",0)
+    val obtained = PseudobinSerde.SHORT.deserialize(test)
+    val expected = Success(42.toShort,test)
+    assertEquals(obtained, expected)
+  }
+
+  test("Pseudobin to SHORT(negatif) success") {
+    val test : Input = Input("   -42",0)
+    val obtained = PseudobinSerde.SHORT.deserialize(test)
+    val expected = Success(-42.toShort,test)
     assertEquals(obtained, expected)
   }
 
@@ -43,9 +57,23 @@ class MainSuite extends munit.FunSuite {
     assertEquals(obtained, expected)
   }
 
+  test("Pseudobin to LONG success") {
+    val test : Input = Input("                  42",0)
+    val obtained = PseudobinSerde.LONG.deserialize(test)
+    val expected = Success(42.toLong,test)
+    assertEquals(obtained, expected)
+  }
+
   test("DOUBLE to Pseudobin") {
     val obtained = PseudobinSerde.DOUBLE.serialize(42.24)
     val expected = "                   42.24"
+    assertEquals(obtained, expected)
+  }
+
+  test("Pseudobin to Double success") {
+    val test : Input = Input("                   24.42",0)
+    val obtained = PseudobinSerde.DOUBLE.deserialize(test)
+    val expected = Success(24.42,test)
     assertEquals(obtained, expected)
   }
 
@@ -61,9 +89,30 @@ class MainSuite extends munit.FunSuite {
     assertEquals(obtained, expected)
   }
 
+  test("Pseudobin to BOOLEAN(true)") {
+    val test : Input = Input(" true",0)
+    val obtained = PseudobinSerde.BOOLEAN.deserialize(test)
+    val expected = Success(true,test)
+    assertEquals(obtained, expected)
+  }
+
+  test("Pseudobin to BOOLEAN(false)") {
+    val test : Input = Input("false",0)
+    val obtained = PseudobinSerde.BOOLEAN.deserialize(test)
+    val expected = Success(false,test)
+    assertEquals(obtained, expected)
+  }
+
   test("String to Pseudobin") {
     val obtained = PseudobinSerde.STRING.serialize("hello")
     val expected = "     5hello"
+    assertEquals(obtained, expected)
+  }
+
+  test("Pseudobin to String success") {
+    val test : Input = Input("    11aaaaaaaaaaa",0)
+    val obtained = PseudobinSerde.STRING.deserialize(test)
+    val expected = Success("aaaaaaaaaaa",test)
     assertEquals(obtained, expected)
   }
 }

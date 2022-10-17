@@ -34,8 +34,7 @@ object PseudobinSerde{
       tryINT
     }
   }
-
-
+  
   val SHORT   = new PseudobinSerde[Short] {
     override def serialize(value: Short): String = {
       val size = value.toString.length
@@ -49,6 +48,7 @@ object PseudobinSerde{
       trySHORT
     }
   }
+  
   val LONG    = new PseudobinSerde[Long] {
     override def serialize(value: Long): String = {
       val size = value.toString.length
