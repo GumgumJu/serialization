@@ -93,10 +93,11 @@ object PseudobinSerde{
       blank.concat(size.toString).concat(value)
     }
     override def deserialize(data: Input): Maybe[String] = {
-//      val Message_length: String = data.current(6)
-//      val str_length : Int = Try(Message_length.trim.toInt)
-//      val trySTRING : Maybe[String] = Try(message.trim.toBoolean,data)
-//      tryBOOLEAN
+      val Message_length: String = data.current(6)
+      val str_length : Int = Message_length.trim.toInt
+      val message : String = data.current(6+str_length)
+      val trySTRING : Maybe[String] = Try(message.substring(6),data)
+      trySTRING
     }
 
   def ARRAY[A](itemSerde: PseudobinSerde[A]) = new PseudobinSerde[List[A]] {
