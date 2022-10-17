@@ -42,6 +42,7 @@ object PseudobinSerde{
       val blank :String= " " * (6-size)
       blank.concat(value.toString)
     }
+
     override def deserialize(data: Input): Maybe[Short] = {
       val message : String = data.current(6)
       val trySHORT :Maybe[Short] = Try(message.trim.toShort,data)
@@ -67,6 +68,7 @@ object PseudobinSerde{
       val blank :String= " " * (24-size)
       blank.concat(value.toString)
     }
+
     override def deserialize(data: Input): Maybe[Double] = {
       val message : String = data.current(24)
       val tryDOUBLE :Maybe[Double] = Try(message.trim.toDouble,data)
@@ -76,9 +78,10 @@ object PseudobinSerde{
 
   val BOOLEAN = new PseudobinSerde[Boolean] {
     override def serialize(value: Boolean): String = {
-      if(value==true) " true" else "false"
+      if(value==true)
+        " true" else "false"
     }
-    }
+
     override def deserialize(data: Input): Maybe[Boolean] = {
       val message: String = data.current(5)
       val tryBOOLEAN : Maybe[Boolean] = Try(message.trim.toBoolean,data)
@@ -89,9 +92,11 @@ object PseudobinSerde{
   val STRING  = new PseudobinSerde[String] {
     override def serialize(value: String): String = {
       val size = value.length
-      val blank :String= " " * (6-size)
+      val sizeLength = size.toString.length
+      val blank :String= " " * (6-sizeLength) 
       blank.concat(size.toString).concat(value)
     }
+
     override def deserialize(data: Input): Maybe[String] = {
       val Message_length: String = data.current(6)
       val str_length : Int = Message_length.trim.toInt
@@ -165,4 +170,6 @@ case class OperationRequest(id: String, operator: Operator, a: Int, b: Int)
  *
  * @param id correlation ID, coming from the corresponding request.
  */
-case class OperationResponse(id: String, result: Option[Int])
+case class OperationResponse(id: String, result: Option[Int]){
+}
+}

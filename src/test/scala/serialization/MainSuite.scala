@@ -51,7 +51,7 @@ class MainSuite extends munit.FunSuite {
 
   test("BOOLEAN(true) to Pseudobin") {
     val obtained = PseudobinSerde.BOOLEAN.serialize(true)
-    val expected = ".true"
+    val expected = " true"
     assertEquals(obtained, expected)
   }
 
