@@ -62,6 +62,7 @@ object PseudobinSerde{
       tryLONG
     }
   }
+
   val DOUBLE  = new PseudobinSerde[Double] {
     override def serialize(value: Double): String = {
       val size = value.toString.length
@@ -93,24 +94,27 @@ object PseudobinSerde{
     override def serialize(value: String): String = {
       val size = value.length
       val sizeLength = size.toString.length
-      val blank :String= " " * (6-sizeLength) 
+      val blank: String = " " * (6 - sizeLength)
       blank.concat(size.toString).concat(value)
     }
 
     override def deserialize(data: Input): Maybe[String] = {
       val Message_length: String = data.current(6)
-      val str_length : Int = Message_length.trim.toInt
-      val message : String = data.current(6+str_length)
-      val trySTRING : Maybe[String] = Try(message.substring(6),data)
+      val str_length: Int = Message_length.trim.toInt
+      val message: String = data.current(6 + str_length)
+      val trySTRING: Maybe[String] = Try(message.substring(6), data)
       trySTRING
     }
+  }
 
   def ARRAY[A](itemSerde: PseudobinSerde[A]) = new PseudobinSerde[List[A]] {
     override def serialize(value: List[A]): String = ???
     override def deserialize(data: Input): Maybe[List[A]] = ???
   }
 
-  def NULLABLE[A](itemSerde: PseudobinSerde[A]): PseudobinSerde[Option[A]] = ???
+  def NULLABLE[A](itemSerde: PseudobinSerde[A]): PseudobinSerde[Option[A]] = {
+
+  }
 }
 //case class Message(content: String, criticality: Int)
 //
@@ -171,19 +175,19 @@ case class OperationRequest(id: String, operator: Operator, a: Int, b: Int)
  * @param id correlation ID, coming from the corresponding request.
  */
 case class OperationResponse(id: String, result: Option[Int]){
+
 }
-}
 
 
 
 
 
 
-Using(server.accept()) { client =>
-
-}.fold( // fold acts here like an if
-
-  error => println(s">>> client connection failure: ${error.getMessage}"),
-
-  _ => ()
-)
+//Using(server.accept()) { client =>
+//
+//}.fold( // fold acts here like an if
+//
+//  error => println(s">>> client connection failure: ${error.getMessage}"),
+//
+//  _ => ()
+//)
