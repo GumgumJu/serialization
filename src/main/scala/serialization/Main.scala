@@ -173,3 +173,17 @@ case class OperationRequest(id: String, operator: Operator, a: Int, b: Int)
 case class OperationResponse(id: String, result: Option[Int]){
 }
 }
+
+
+
+
+
+
+Using(server.accept()) { client =>
+
+}.fold( // fold acts here like an if
+
+  error => println(s">>> client connection failure: ${error.getMessage}"),
+
+  _ => ()
+)
