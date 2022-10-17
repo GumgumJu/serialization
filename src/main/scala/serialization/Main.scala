@@ -51,9 +51,10 @@ object PseudobinSerde{
   val LONG    = new PseudobinSerde[Long] {
     override def serialize(value: Long): String = {
       val size = value.toString.length
-      blank.concat(value.toString)
       val blank :String= " " * (20-size)
+      blank.concat(value.toString)
     }
+    
     override def deserialize(data: Input): Maybe[Long] = {
       val message : String = data.current(20)
       val tryLONG :Maybe[Long] = Try(message.trim.toLong,data)
