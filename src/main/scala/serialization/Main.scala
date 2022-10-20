@@ -95,7 +95,7 @@ object PseudobinSerde{
     }
   }
 
-  val STRING  = new PseudobinSerde[String] {
+  val STRING: PseudobinSerde[String] = new PseudobinSerde[String] {
     override def serialize(value: String): String = {
       val size = value.length
       val sizeLength = size.toString.length
@@ -124,12 +124,21 @@ object PseudobinSerde{
   def NULLABLE[A](itemSerde: PseudobinSerde[A])= new PseudobinSerde[Option[A]] {
     override def serialize(value: Option[A]): String = {
       value match {
-        case Some(v) => "1" + itemSerde.serialize(v)
-        case None => "0"
+        case Some(v) => " true" + itemSerde.serialize(v)
+        case None => "false"
       }
     }
+    
+    // Understand Try, Option and for comprehension
 
-    override def deserialize(data: Input): Maybe[Option[A]] = ???
+    override def deserialize(data: Input): Maybe[Option[A]] = {
+      for {
+        (bool, nextInput) <- PseudobinSerde.BOOLEAN.deserialize(data)
+        (maybeA, nextNextInput) <-
+          if (bool) itemSerde.deserialize(nextInput).map((a, input) => (Some(a), input))
+          else Success((None, nextInput))
+      } yield (maybeA, nextNextInput)
+    }
   }
 }
 //case class Message(content: String, criticality: Int)

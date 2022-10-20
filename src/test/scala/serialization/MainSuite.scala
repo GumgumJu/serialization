@@ -144,4 +144,13 @@ class MainSuite extends munit.FunSuite {
     val expected = Try(("aaaaaaaaaaa","bbbbbbbb"))
     assertEquals(obtained, expected)
   }
+
+  test("NULLABLE to Pseudobin") {
+    val input: Option[String] = Some("hello")
+    val obtained: String = for {
+      string <- PseudobinSerde.NULLABLE(PseudobinSerde.STRING).serialize(input)
+    } yield (string)
+    val expected = " true     5hello"
+    assertEquals(obtained, expected)
+  }
 }
