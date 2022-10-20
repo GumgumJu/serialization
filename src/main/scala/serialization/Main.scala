@@ -112,7 +112,18 @@ object PseudobinSerde{
       } yield (string, data.next(6 + Message_length_int))
     }
   }
+  val ARRAY_INT = ARRAY(INT)
 
+  def ARRAY[A](itemSerde: PseudobinSerde[A]) = new PseudobinSerde[List[A]] {
+    override def serialize(value: List[A]): String = {
+      val sizelist = value.length.toShort
+      val size = PseudobinSerde.SHORT.serialize(sizelist)
+      val as = value.map(a => itemSerde.serialize(a)).mkString("")
+
+      size + as
+    }
+    override def deserialize(data: Input): Maybe[List[A]] = ??? // foldLeft
+  }
 //  def ARRAY[A](itemSerde: PseudobinSerde[A]) = new PseudobinSerde[List[A]] {
 //    override def serialize(value: List[A]): String = {
 //      val size = value.size
