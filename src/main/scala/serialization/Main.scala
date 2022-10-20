@@ -29,9 +29,10 @@ object PseudobinSerde{
     }
 
     override def deserialize(data: Input): Maybe[Int] = {
-      val message : String = data.current(11)
-      val tryINT :Maybe[Int] = Try(message.trim.toInt,data)
-      tryINT
+      val message: String = data.current(11)
+      for {
+        int <- Try(message.trim.toInt)
+      } yield (int, data.next(11))
     }
   }
   
@@ -44,7 +45,7 @@ object PseudobinSerde{
 
     override def deserialize(data: Input): Maybe[Short] = {
       val message : String = data.current(6)
-      val trySHORT :Maybe[Short] = Try(message.trim.toShort,data)
+      val trySHORT :Maybe[Short] = Try((message.trim.toShort,data))
       trySHORT
     }
   }
@@ -107,14 +108,17 @@ object PseudobinSerde{
     }
   }
 
-  def ARRAY[A](itemSerde: PseudobinSerde[A]) = new PseudobinSerde[List[A]] {
-    override def serialize(value: List[A]): String = ???
-    override def deserialize(data: Input): Maybe[List[A]] = ???
-  }
+//  def ARRAY[A](itemSerde: PseudobinSerde[A]) = new PseudobinSerde[List[A]] {
+//    override def serialize(value: List[A]): String = {
+//      val size = value.size
+//      val size_string = " " * (6 - sizeLength)
+//    }
+//    override def deserialize(data: Input): Maybe[List[A]] = ???
+//  }
 
-  def NULLABLE[A](itemSerde: PseudobinSerde[A]): PseudobinSerde[Option[A]] = {
+  //def NULLABLE[A](itemSerde: PseudobinSerde[A]): PseudobinSerde[Option[A]] = {
 
-  }
+  //}
 }
 //case class Message(content: String, criticality: Int)
 //

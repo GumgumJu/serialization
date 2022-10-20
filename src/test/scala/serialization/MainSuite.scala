@@ -19,6 +19,18 @@ class MainSuite extends munit.FunSuite {
     assertEquals(obtained, expected)
   }
 
+  test("I want to read 2 int") {
+    val string = "         42         42"
+    val input = Input(string, 0)
+     case class a (int: Int, int2: Int)
+    val obtained = for { // for comprehension + try
+      (int, nextInput) <- PseudobinSerde.INT.deserialize(input)
+      (int2, _) <- PseudobinSerde.INT.deserialize(nextInput)
+    } yield (int, int2)
+
+    assertEquals(obtained, Try((42, 42)))
+  }
+
   test("Pseudobin to INT failure") {
     val test : Input = Input("    4   2",0)
     val obtained = PseudobinSerde.INT.deserialize(test)
