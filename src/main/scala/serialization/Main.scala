@@ -45,8 +45,9 @@ object PseudobinSerde{
 
     override def deserialize(data: Input): Maybe[Short] = {
       val message : String = data.current(6)
-      val trySHORT :Maybe[Short] = Try((message.trim.toShort,data))
-      trySHORT
+      for {
+        short <- Try(message.trim.toShort)
+      } yield (short, data.next(6))
     }
   }
   
@@ -59,8 +60,9 @@ object PseudobinSerde{
     
     override def deserialize(data: Input): Maybe[Long] = {
       val message : String = data.current(20)
-      val tryLONG :Maybe[Long] = Try(message.trim.toLong,data)
-      tryLONG
+      for {
+        long <- Try(message.trim.toLong)
+      } yield (long, data.next(20))
     }
   }
 
@@ -73,8 +75,9 @@ object PseudobinSerde{
 
     override def deserialize(data: Input): Maybe[Double] = {
       val message : String = data.current(24)
-      val tryDOUBLE :Maybe[Double] = Try(message.trim.toDouble,data)
-      tryDOUBLE
+      for {
+        double <- Try(message.trim.toDouble)
+      } yield (double, data.next(24))
     }
   }
 
@@ -86,8 +89,9 @@ object PseudobinSerde{
 
     override def deserialize(data: Input): Maybe[Boolean] = {
       val message: String = data.current(5)
-      val tryBOOLEAN : Maybe[Boolean] = Try(message.trim.toBoolean,data)
-      tryBOOLEAN
+      for {
+        boolean <- Try(message.trim.toBoolean)
+      } yield (boolean, data.next(5))
     }
   }
 
@@ -101,10 +105,11 @@ object PseudobinSerde{
 
     override def deserialize(data: Input): Maybe[String] = {
       val Message_length: String = data.current(6)
-      val str_length: Int = Message_length.trim.toInt
-      val message: String = data.current(6 + str_length)
-      val trySTRING: Maybe[String] = Try(message.substring(6), data)
-      trySTRING
+      val Message_length_int: Int = Message_length.trim.toInt
+      val message: String = data.current(6 + Message_length_int)
+      for {
+        string <- Try(message.substring(6))
+      } yield (string, data.next(6 + Message_length_int))
     }
   }
 
