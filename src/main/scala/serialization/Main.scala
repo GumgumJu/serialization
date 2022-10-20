@@ -20,78 +20,76 @@ trait PseudobinSerde[A] {
 }
 
 //Types
-object PseudobinSerde{
+object PseudobinSerde {
   val INT = new PseudobinSerde[Int] {
     override def serialize(value: Int): String = {
       val size = value.toString.length
-      val blank : String = " " * (11-size)
+      val blank: String = " " * (11 - size)
       blank.concat(value.toString)
     }
 
     override def deserialize(data: Input): Maybe[Int] = {
-      val message: String = data.current(11)
-      for {
-        int <- Try(message.trim.toInt)
-      } yield (int, data.next(11))
+      val message : String = data.current(11)
+      val tryINT :Maybe[Int] = Try(message.trim.toInt,data)
+      tryINT
     }
   }
-  
-  val SHORT   = new PseudobinSerde[Short] {
+
+  val SHORT = new PseudobinSerde[Short] {
     override def serialize(value: Short): String = {
       val size = value.toString.length
-      val blank :String= " " * (6-size)
+      val blank: String = " " * (6 - size)
       blank.concat(value.toString)
     }
 
     override def deserialize(data: Input): Maybe[Short] = {
       val message : String = data.current(6)
-      val trySHORT :Maybe[Short] = Try((message.trim.toShort,data))
+      val trySHORT :Maybe[Short] = Try(message.trim.toShort,data)
       trySHORT
     }
   }
-  
-  val LONG    = new PseudobinSerde[Long] {
+
+  val LONG = new PseudobinSerde[Long] {
     override def serialize(value: Long): String = {
       val size = value.toString.length
-      val blank :String= " " * (20-size)
+      val blank: String = " " * (20 - size)
       blank.concat(value.toString)
     }
-    
+
     override def deserialize(data: Input): Maybe[Long] = {
-      val message : String = data.current(20)
-      val tryLONG :Maybe[Long] = Try(message.trim.toLong,data)
+      val message: String = data.current(20)
+      val tryLONG: Maybe[Long] = Try(message.trim.toLong, data)
       tryLONG
     }
   }
 
-  val DOUBLE  = new PseudobinSerde[Double] {
+  val DOUBLE = new PseudobinSerde[Double] {
     override def serialize(value: Double): String = {
       val size = value.toString.length
-      val blank :String= " " * (24-size)
+      val blank: String = " " * (24 - size)
       blank.concat(value.toString)
     }
 
     override def deserialize(data: Input): Maybe[Double] = {
-      val message : String = data.current(24)
-      val tryDOUBLE :Maybe[Double] = Try(message.trim.toDouble,data)
+      val message: String = data.current(24)
+      val tryDOUBLE: Maybe[Double] = Try(message.trim.toDouble, data)
       tryDOUBLE
     }
   }
 
   val BOOLEAN = new PseudobinSerde[Boolean] {
     override def serialize(value: Boolean): String = {
-      if(value==true)
-        " true" else "false"
+      if (value) " true" else "false"
     }
 
     override def deserialize(data: Input): Maybe[Boolean] = {
       val message: String = data.current(5)
-      val tryBOOLEAN : Maybe[Boolean] = Try(message.trim.toBoolean,data)
+      val tryBOOLEAN: Maybe[Boolean] = Try(message.trim.toBoolean, data)
       tryBOOLEAN
     }
   }
 
-  val STRING  = new PseudobinSerde[String] {
+  val STRING = new PseudobinSerde[String] {
     override def serialize(value: String): String = {
       val size = value.length
       val sizeLength = size.toString.length
@@ -108,18 +106,17 @@ object PseudobinSerde{
     }
   }
 
-//  def ARRAY[A](itemSerde: PseudobinSerde[A]) = new PseudobinSerde[List[A]] {
-//    override def serialize(value: List[A]): String = {
-//      val size = value.size
-//      val size_string = " " * (6 - sizeLength)
-//    }
-//    override def deserialize(data: Input): Maybe[List[A]] = ???
-//  }
+  def ARRAY[A](itemSerde: PseudobinSerde[A]) = new PseudobinSerde[List[A]] {
+    override def serialize(value: List[A]): String = ???
+    override def deserialize(data: Input): Maybe[List[A]] = ???
+  }
 
-  //def NULLABLE[A](itemSerde: PseudobinSerde[A]): PseudobinSerde[Option[A]] = {
+  def NULLABLE[A](itemSerde: PseudobinSerde[A]): PseudobinSerde[Option[A]] = {
 
-  //}
+  }
 }
+
+
 //case class Message(content: String, criticality: Int)
 //
 //object Message{
