@@ -121,9 +121,16 @@ object PseudobinSerde{
 //    override def deserialize(data: Input): Maybe[List[A]] = ???
 //  }
 
-  //def NULLABLE[A](itemSerde: PseudobinSerde[A]): PseudobinSerde[Option[A]] = {
+  def NULLABLE[A](itemSerde: PseudobinSerde[A])= new PseudobinSerde[Option[A]] {
+    override def serialize(value: Option[A]): String = {
+      value match {
+        case Some(v) => "1" + itemSerde.serialize(v)
+        case None => "0"
+      }
+    }
 
-  //}
+    override def deserialize(data: Input): Maybe[Option[A]] = ???
+  }
 }
 //case class Message(content: String, criticality: Int)
 //

@@ -138,9 +138,9 @@ class MainSuite extends munit.FunSuite {
   test("Pseudobin to String success") {
     val input : Input = Input("    11aaaaaaaaaaa     8bbbbbbbb",0)
     val obtained = for {
-      (boolean, nextInput) <- PseudobinSerde.STRING.deserialize(input)
-      (boolean2, _) <- PseudobinSerde.STRING.deserialize(nextInput)
-    } yield (boolean, boolean2)
+      (string, nextInput) <- PseudobinSerde.STRING.deserialize(input)
+      (string2, _) <- PseudobinSerde.STRING.deserialize(nextInput)
+    } yield (string, string2)
     val expected = Try(("aaaaaaaaaaa","bbbbbbbb"))
     assertEquals(obtained, expected)
   }
