@@ -140,7 +140,7 @@ object PseudobinSerde{
       }
     }
     
-    // Understand Try, Option and for comprehension
+    // 解释Understand Try, Option and for comprehension
 
     override def deserialize(data: Input): Maybe[Option[A]] = {
       for {
@@ -171,6 +171,8 @@ object PseudobinSerde{
 //    }
 //}
 
+
+//下面不用写
 //Use case
 /**
  * Operation available in the service.

@@ -25,7 +25,7 @@ class MainSuite extends munit.FunSuite {
     val string = "         42         99"
     val input = Input(string, 0)
      case class a (int: Int, int2: Int)
-    val obtained = for { // for comprehension + try
+    val obtained = for { // 解释for comprehension + try
       (int, nextInput) <- PseudobinSerde.INT.deserialize(input)
       (int2, _) <- PseudobinSerde.INT.deserialize(nextInput)
     } yield (int, int2)
