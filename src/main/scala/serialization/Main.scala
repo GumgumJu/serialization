@@ -20,26 +20,25 @@ trait PseudobinSerde[A] {
 }
 
 //Types
-object PseudobinSerde{
+object PseudobinSerde {
   val INT = new PseudobinSerde[Int] {
     override def serialize(value: Int): String = {
       val size = value.toString.length
-      val blank : String = " " * (11-size)
+      val blank: String = " " * (11 - size)
       blank.concat(value.toString)
     }
 
     override def deserialize(data: Input): Maybe[Int] = {
-      val message: String = data.current(11)
-      for {
-        int <- Try(message.trim.toInt)
-      } yield (int, data.next(11))
+      val message : String = data.current(11)
+      val tryINT :Maybe[Int] = Try(message.trim.toInt,data)
+      tryINT
     }
   }
-  
-  val SHORT   = new PseudobinSerde[Short] {
+
+  val SHORT = new PseudobinSerde[Short] {
     override def serialize(value: Short): String = {
       val size = value.toString.length
-      val blank :String= " " * (6-size)
+      val blank: String = " " * (6 - size)
       blank.concat(value.toString)
     }
 
@@ -50,14 +49,14 @@ object PseudobinSerde{
       } yield (short, data.next(6))
     }
   }
-  
-  val LONG    = new PseudobinSerde[Long] {
+
+  val LONG = new PseudobinSerde[Long] {
     override def serialize(value: Long): String = {
       val size = value.toString.length
-      val blank :String= " " * (20-size)
+      val blank: String = " " * (20 - size)
       blank.concat(value.toString)
     }
-    
+
     override def deserialize(data: Input): Maybe[Long] = {
       val message : String = data.current(20)
       for {
@@ -66,10 +65,10 @@ object PseudobinSerde{
     }
   }
 
-  val DOUBLE  = new PseudobinSerde[Double] {
+  val DOUBLE = new PseudobinSerde[Double] {
     override def serialize(value: Double): String = {
       val size = value.toString.length
-      val blank :String= " " * (24-size)
+      val blank: String = " " * (24 - size)
       blank.concat(value.toString)
     }
 
@@ -83,8 +82,7 @@ object PseudobinSerde{
 
   val BOOLEAN = new PseudobinSerde[Boolean] {
     override def serialize(value: Boolean): String = {
-      if(value==true)
-        " true" else "false"
+      if (value) " true" else "false"
     }
 
     override def deserialize(data: Input): Maybe[Boolean] = {
@@ -140,9 +138,7 @@ object PseudobinSerde{
         case None => "false"
       }
     }
-    
     // 解释Understand Try, Option and for comprehension
-
     override def deserialize(data: Input): Maybe[Option[A]] = {
       for {
         (bool, nextInput) <- PseudobinSerde.BOOLEAN.deserialize(data)
@@ -150,16 +146,18 @@ object PseudobinSerde{
           if (bool) itemSerde.deserialize(nextInput).map((a, input) => (Some(a), input))
           else Success((None, nextInput))
       } yield (maybeA, nextNextInput)
+
     }
   }
 }
+
 case class Message(content: String, criticality: Int)
 
 object Message{
   val serde: PseudobinSerde[Message] =
     new PseudobinSerde[Message] {
-      override def serialize(value: Message): String =
-          PseudobinSerde.STRING.serialize(value.content) + PseudobinSerde.INT.serialize(value.criticality)
+      override def serialize(value:Message): String =
+          PseudobinSerde.STRING.serialize(value.content)+PseudobinSerde.INT.serialize(value.criticality)
 
       override def deserialize(data: Input): Maybe[Message] =
         for {
@@ -167,57 +165,9 @@ object Message{
           (content, input1) <- PseudobinSerde.STRING.deserialize(data)
           // from the new input, get the criticality and another new input
           (criticality, input2) <- PseudobinSerde.INT.deserialize(input1)
-          A <- Try(Message(content, criticality),input2)
+          A <- Try(Message(content,criticality),input2)
         } yield A
     }
 }
-
-
-//下面不用写
-//Use case
-/**
- * Operation available in the service.
- *
- * This trait must be implemented by the server part, to compute the
- * result.
- *
- * It must be implemented by the client part, to call the server and its
- * result.
- */
-trait OperationService{
-  def add(a: Int, b: Int): Option[Int]
-  def minus(a: Int, b: Int): Option[Int]
-  def multiply(a: Int, b: Int): Option[Int]
-  def divide(a: Int, b: Int): Option[Int]
-}
-
-/**
- * Available operators, used in operation request, sent by the client.
- */
-enum Operator {
-  case ADD, MINUS, MULTIPLY, DIVIDE
-}
-
-/**
- * Operation request sent by the client to the server.
- *
- * @param id
- *   identification of the request. It is a unique ID bound to this
- *   request. It is also named ''correlation ID''. It can be generated
- *   by using `java.util.UUID.randomUUID().toString`.
- */
-case class OperationRequest(id: String, operator: Operator, a: Int, b: Int)
-
-/**
- * Response sent by the server, containing the result.
- *
- * @param id correlation ID, coming from the corresponding request.
- */
-case class OperationResponse(id: String, result: Option[Int]){
-
-}
-
-
-
 
 
