@@ -153,4 +153,22 @@ class MainSuite extends munit.FunSuite {
     val expected = " true     5hello"
     assertEquals(obtained, expected)
   }
+
+  test("Message Class serialize"){
+    val input: Message = Message("Hello",50)
+    val obtained: String = Message.serde.serialize(Message("Hello",50))
+    val expected: String = "     5Hello         50"
+    assertEquals(obtained, expected)
+  }
+
+  test("Message Class deserialize"){
+    val input: Input = Input("     5Hello         50",0)
+    val obtained = for{
+      (Message(content,criticality),input1) <- Message.serde.deserialize(input)
+    }yield(Message(content,criticality))
+    val expected = Try(Message("Hello",50))
+    assertEquals(obtained, expected)
+  }
+
+
 }
