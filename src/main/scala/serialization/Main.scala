@@ -143,12 +143,6 @@ object PseudobinSerde {
   }
 }
 
-object Message{
-  val serde: PseudobinSerde[Message] =
-    new PseudobinSerde[Message] {
-      override def serialize(value: Message): String =
-          PseudobinSerde.STRING.serialize(value.content) + PseudobinSerde.INT.serialize(value.criticality)
-
 case class Message(content: String, criticality: Int)
 
 object Message{
