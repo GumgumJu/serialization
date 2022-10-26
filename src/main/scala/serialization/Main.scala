@@ -112,7 +112,7 @@ object PseudobinSerde{
       } yield (string, data.next(6 + Message_length_int))
     }
   }
-  val ARRAY_INT = ARRAY(INT)
+//  val ARRAY_INT = ARRAY(INT)
 
   def ARRAY[A](itemSerde: PseudobinSerde[A]) = new PseudobinSerde[List[A]] {
     override def serialize(value: List[A]): String = {
@@ -124,13 +124,6 @@ object PseudobinSerde{
     }
     override def deserialize(data: Input): Maybe[List[A]] = ??? // foldLeft
   }
-//  def ARRAY[A](itemSerde: PseudobinSerde[A]) = new PseudobinSerde[List[A]] {
-//    override def serialize(value: List[A]): String = {
-//      val size = value.size
-//      val size_string = " " * (6 - sizeLength)
-//    }
-//    override def deserialize(data: Input): Maybe[List[A]] = ???
-//  }
 
   def NULLABLE[A](itemSerde: PseudobinSerde[A])= new PseudobinSerde[Option[A]] {
     override def serialize(value: Option[A]): String = {
@@ -152,24 +145,24 @@ object PseudobinSerde{
     }
   }
 }
-//case class Message(content: String, criticality: Int)
-//
-//object Message{
-//  val serde: PseudobinSerde[Message] =
-//    new PseudobinSerde[Message] {
-//      override def serializer: String =
-//        value =>
-//          STRING.toPseudobin(value.content) + INT.toPseudobin(value.criticality)
-//
-//      override def deserializer(data: Input): Maybe[(Message, Input)] =
-//        for {
-//          // first get the content and get new input
-//          (content, input1) <- STRING.fromPseudoBin(data)
-//          // from the new input, get the criticality and another new input
-//          (criticality, input2) <- INT.fromPseudoBin(input1)
-//        } yield (Message(content, criticality), input2)
-//    }
-//}
+case class Message(content: String, criticality: Int)
+
+object Message{
+  val serde: PseudobinSerde[Message] =
+    new PseudobinSerde[Message] {
+      override def serialize(value: Message): String =
+          PseudobinSerde.STRING.serialize(value.content) + PseudobinSerde.INT.serialize(value.criticality)
+
+      override def deserialize(data: Input): Maybe[Message] =
+        for {
+          // first get the content and get new input
+          (content, input1) <- PseudobinSerde.STRING.deserialize(data)
+          // from the new input, get the criticality and another new input
+          (criticality, input2) <- PseudobinSerde.INT.deserialize(input1)
+          A <- Try(Message(content, criticality),input2)
+        } yield A
+    }
+}
 
 
 //下面不用写
