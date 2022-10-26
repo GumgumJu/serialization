@@ -114,8 +114,8 @@ object PseudobinSerde {
 
   def ARRAY[A](itemSerde: PseudobinSerde[A]) = new PseudobinSerde[List[A]] {
     override def serialize(value: List[A]): String = {
-      val size = PseudobinSerde.SHORT.serialize(sizelist)
       val sizelist = value.length.toShort
+      val size = PseudobinSerde.SHORT.serialize(sizelist)
       val as = value.map(a => itemSerde.serialize(a)).mkString("")
 
       size + as
@@ -124,90 +124,89 @@ object PseudobinSerde {
   }
 
   def NULLABLE[A](itemSerde: PseudobinSerde[A])= new PseudobinSerde[Option[A]] {
-      }
     override def serialize(value: Option[A]): String = {
       value match {
         case Some(v) => " true" + itemSerde.serialize(v)
         case None => "false"
+      }
     }
-    
     // 解释Understand Try, Option and for comprehension
-
-      for {
     override def deserialize(data: Input): Maybe[Option[A]] = {
+      for {
         (bool, nextInput) <- PseudobinSerde.BOOLEAN.deserialize(data)
         (maybeA, nextNextInput) <-
           if (bool) itemSerde.deserialize(nextInput).map((a, input) => (Some(a), input))
-      } yield (maybeA, nextNextInput)
           else Success((None, nextInput))
+      } yield (maybeA, nextNextInput)
+
     }
   }
 }
 
 
-//case class Message(content: String, criticality: Int)
-//
-//object Message{
-//  val serde: PseudobinSerde[Message] =
-//    new PseudobinSerde[Message] {
-//      override def serializer: String =
-//        value =>
-//          STRING.toPseudobin(value.content) + INT.toPseudobin(value.criticality)
-//
-//      override def deserializer(data: Input): Maybe[(Message, Input)] =
-//        for {
-//          // first get the content and get new input
-//          (content, input1) <- STRING.fromPseudoBin(data)
-//          // from the new input, get the criticality and another new input
-//          (criticality, input2) <- INT.fromPseudoBin(input1)
-//        } yield (Message(content, criticality), input2)
-//    }
-//}
+case class Message(content: String, criticality: Int)
+
+object Message{
+  val serde: PseudobinSerde[Message] =
+    new PseudobinSerde[Message] {
+      override def serialize(value:Message): String =
+          PseudobinSerde.STRING.serialize(value.content)+PseudobinSerde.INT.serialize(value.criticality)
+
+      override def deserialize(data: Input): Maybe[Message] =
+        for {
+          // first get the content and get new input
+          (content, input1) <- PseudobinSerde.STRING.deserialize(data)
+          // from the new input, get the criticality and another new input
+          (criticality, input2) <- PseudobinSerde.INT.deserialize(input1)
+          A <- Try(Message(content,criticality),input2)
+        } yield A
+    }
+}
 
 
 //下面不用写
 //Use case
-/**
- * Operation available in the service.
- *
- * This trait must be implemented by the server part, to compute the
- * result.
- *
- * It must be implemented by the client part, to call the server and its
- * result.
- */
-trait OperationService{
-  def add(a: Int, b: Int): Option[Int]
-  def minus(a: Int, b: Int): Option[Int]
-  def multiply(a: Int, b: Int): Option[Int]
-  def divide(a: Int, b: Int): Option[Int]
-}
-
-/**
- * Available operators, used in operation request, sent by the client.
- */
-enum Operator {
-  case ADD, MINUS, MULTIPLY, DIVIDE
-}
-
-/**
- * Operation request sent by the client to the server.
- *
- * @param id
- *   identification of the request. It is a unique ID bound to this
- *   request. It is also named ''correlation ID''. It can be generated
- *   by using `java.util.UUID.randomUUID().toString`.
- */
-case class OperationRequest(id: String, operator: Operator, a: Int, b: Int)
-
-/**
- * Response sent by the server, containing the result.
- *
- * @param id correlation ID, coming from the corresponding request.
- */
-case class OperationResponse(id: String, result: Option[Int]){
-
-}
+///**
+// * Operation available in the service.
+// *
+// * This trait must be implemented by the server part, to compute the
+// * result.
+// *
+// * It must be implemented by the client part, to call the server and its
+// * result.
+// */
+//trait OperationService{
+//  def add(a: Int, b: Int): Option[Int]
+//  def minus(a: Int, b: Int): Option[Int]
+//  def multiply(a: Int, b: Int): Option[Int]
+//  def divide(a: Int, b: Int): Option[Int]
+//}
+//
+///**
+// * Available operators, used in operation request, sent by the client.
+// */
+//enum Operator {
+//  case ADD, MINUS, MULTIPLY, DIVIDE
+//}
+//
+///**
+// * Operation request sent by the client to the server.
+// *
+// * @param id
+// *   identification of the request. It is a unique ID bound to this
+// *   request. It is also named ''correlation ID''. It can be generated
+// *   by using `java.util.UUID.randomUUID().toString`.
+// */
+//case class OperationRequest(id: String, operator: Operator, a: Int, b: Int)
+//
+///**
+// * Response sent by the server, containing the result.
+// *
+// * @param id correlation ID, coming from the corresponding request.
+// */
+//case class OperationResponse(id: String, result: Option[Int]){
+//???
+//}
 
 
 
