@@ -110,7 +110,7 @@ object PseudobinSerde {
       } yield (string, data.next(6 + Message_length_int))
     }
   }
-  val ARRAY_INT = ARRAY(INT)
+//  val ARRAY_INT = ARRAY(INT)
 
   def ARRAY[A](itemSerde: PseudobinSerde[A]) = new PseudobinSerde[List[A]] {
     override def serialize(value: List[A]): String = {
@@ -143,6 +143,11 @@ object PseudobinSerde {
   }
 }
 
+object Message{
+  val serde: PseudobinSerde[Message] =
+    new PseudobinSerde[Message] {
+      override def serialize(value: Message): String =
+          PseudobinSerde.STRING.serialize(value.content) + PseudobinSerde.INT.serialize(value.criticality)
 
 case class Message(content: String, criticality: Int)
 
