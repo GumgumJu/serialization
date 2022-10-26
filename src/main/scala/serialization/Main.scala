@@ -122,7 +122,15 @@ object PseudobinSerde{
 
       size + as
     }
-    override def deserialize(data: Input): Maybe[List[A]] = ??? // foldLeft
+//    override def deserialize(data: Input): Maybe[List[A]] = {
+//      val Message_length: String = data.current(6)
+//      val Message_length_int: Int = Message_length.trim.toInt
+//      var listReuturn = List[A]
+//      for (i <- 1 to Message_length_int) {
+//          val a = data
+//      }
+//    }
+    // foldLeft
   }
 
   def NULLABLE[A](itemSerde: PseudobinSerde[A])= new PseudobinSerde[Option[A]] {
