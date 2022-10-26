@@ -14,26 +14,31 @@ class MainSuite extends munit.FunSuite {
 
   test("Pseudobin to INT success") {
     val test : Input = Input("         42",0)
-    val obtained = PseudobinSerde.INT.deserialize(test)
-    val expected = Success(42,test)
+    val obtained = for{
+      (int, nextInput) <- PseudobinSerde.INT.deserialize(test)
+    }yield (int)
+    val expected = Try(42)
     assertEquals(obtained, expected)
   }
 
   test("I want to read 2 int") {
-    val string = "         42         42"
+    val string = "         42         99"
     val input = Input(string, 0)
      case class a (int: Int, int2: Int)
-    val obtained = for { // for comprehension + try
+    val obtained = for { // 解释for comprehension + try
       (int, nextInput) <- PseudobinSerde.INT.deserialize(input)
       (int2, _) <- PseudobinSerde.INT.deserialize(nextInput)
     } yield (int, int2)
-
-    assertEquals(obtained, Try((42, 42)))
+    val expected = Try((42, 99))
+    assertEquals(obtained, expected)
   }
 
   test("Pseudobin to INT failure") {
-    val test : Input = Input("    4   2",0)
-    val obtained = PseudobinSerde.INT.deserialize(test)
+    val input : Input = Input("         42    4   2",0)
+    val obtained = for {
+      (int, nextInput) <- PseudobinSerde.INT.deserialize(input)
+      (int2, _) <- PseudobinSerde.INT.deserialize(nextInput)
+    } yield (int, int2)
     print(obtained)
   }
 
@@ -49,17 +54,23 @@ class MainSuite extends munit.FunSuite {
     assertEquals(obtained, expected)
   }
 
-  test("Pseudobin to SHORT(positif) success") {
-    val test : Input = Input("    42",0)
-    val obtained = PseudobinSerde.SHORT.deserialize(test)
-    val expected = Success(42.toShort,test)
+  test("2 Pseudobin to SHORT(positif) success") {
+    val input : Input = Input("    42    89",0)
+    val obtained = for {
+      (short, nextInput) <- PseudobinSerde.SHORT.deserialize(input)
+      (short2, _) <- PseudobinSerde.SHORT.deserialize(nextInput)
+    } yield (short, short2)
+    val expected = Try((42.toShort,89.toShort))
     assertEquals(obtained, expected)
   }
 
-  test("Pseudobin to SHORT(negatif) success") {
-    val test : Input = Input("   -42",0)
-    val obtained = PseudobinSerde.SHORT.deserialize(test)
-    val expected = Success(-42.toShort,test)
+  test("2 Pseudobin to SHORT(negatif) success") {
+    val input : Input = Input("   -42   -99",0)
+    val obtained = for {
+      (short, nextInput) <- PseudobinSerde.SHORT.deserialize(input)
+      (short2, _) <- PseudobinSerde.SHORT.deserialize(nextInput)
+    } yield (short, short2)
+    val expected = Try((-42.toShort,-99.toShort))
     assertEquals(obtained, expected)
   }
 
@@ -69,10 +80,14 @@ class MainSuite extends munit.FunSuite {
     assertEquals(obtained, expected)
   }
 
-  test("Pseudobin to LONG success") {
-    val test : Input = Input("                  42",0)
-    val obtained = PseudobinSerde.LONG.deserialize(test)
-    val expected = Success(42.toLong,test)
+  test("3 Pseudobin to LONG success") {
+    val input : Input = Input("                  42                   9                 199",0)
+    val obtained = for {
+      (long, nextInput1) <- PseudobinSerde.LONG.deserialize(input)
+      (long2, nextInput2) <- PseudobinSerde.LONG.deserialize(nextInput1)
+      (long3, _) <- PseudobinSerde.LONG.deserialize(nextInput2)
+    } yield (long, long2, long3)
+    val expected = Try((42.toLong, 9.toLong, 199.toLong))
     assertEquals(obtained, expected)
   }
 
@@ -82,10 +97,13 @@ class MainSuite extends munit.FunSuite {
     assertEquals(obtained, expected)
   }
 
-  test("Pseudobin to Double success") {
-    val test : Input = Input("                   24.42",0)
-    val obtained = PseudobinSerde.DOUBLE.deserialize(test)
-    val expected = Success(24.42,test)
+  test("2 Pseudobin to Double success") {
+    val input : Input = Input("                   24.42                    1.99",0)
+    val obtained = for {
+      (double, nextInput) <- PseudobinSerde.DOUBLE.deserialize(input)
+      (double2, _) <- PseudobinSerde.DOUBLE.deserialize(nextInput)
+    } yield (double, double2)
+    val expected = Try((24.42,1.99))
     assertEquals(obtained, expected)
   }
 
@@ -101,17 +119,13 @@ class MainSuite extends munit.FunSuite {
     assertEquals(obtained, expected)
   }
 
-  test("Pseudobin to BOOLEAN(true)") {
-    val test : Input = Input(" true",0)
-    val obtained = PseudobinSerde.BOOLEAN.deserialize(test)
-    val expected = Success(true,test)
-    assertEquals(obtained, expected)
-  }
-
-  test("Pseudobin to BOOLEAN(false)") {
-    val test : Input = Input("false",0)
-    val obtained = PseudobinSerde.BOOLEAN.deserialize(test)
-    val expected = Success(false,test)
+  test("2 Pseudobin to BOOLEAN(true)") {
+    val input : Input = Input(" truefalse",0)
+    val obtained = for {
+      (boolean, nextInput) <- PseudobinSerde.BOOLEAN.deserialize(input)
+      (boolean2, _) <- PseudobinSerde.BOOLEAN.deserialize(nextInput)
+    } yield (boolean, boolean2)
+    val expected = Try((true,false))
     assertEquals(obtained, expected)
   }
 
@@ -122,9 +136,21 @@ class MainSuite extends munit.FunSuite {
   }
 
   test("Pseudobin to String success") {
-    val test : Input = Input("    11aaaaaaaaaaa",0)
-    val obtained = PseudobinSerde.STRING.deserialize(test)
-    val expected = Success("aaaaaaaaaaa",test)
+    val input : Input = Input("    11aaaaaaaaaaa     8bbbbbbbb",0)
+    val obtained = for {
+      (string, nextInput) <- PseudobinSerde.STRING.deserialize(input)
+      (string2, _) <- PseudobinSerde.STRING.deserialize(nextInput)
+    } yield (string, string2)
+    val expected = Try(("aaaaaaaaaaa","bbbbbbbb"))
+    assertEquals(obtained, expected)
+  }
+
+  test("NULLABLE to Pseudobin") {
+    val input: Option[String] = Some("hello")
+    val obtained: String = for {
+      string <- PseudobinSerde.NULLABLE(PseudobinSerde.STRING).serialize(input)
+    } yield (string)
+    val expected = " true     5hello"
     assertEquals(obtained, expected)
   }
 }
