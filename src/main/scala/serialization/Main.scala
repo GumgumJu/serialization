@@ -110,7 +110,6 @@ object PseudobinSerde {
       } yield (string, data.next(6 + Message_length_int))
     }
   }
-//  val ARRAY_INT = ARRAY(INT)
 
   def ARRAY[A](itemSerde: PseudobinSerde[A]) = new PseudobinSerde[List[A]] {
     override def serialize(value: List[A]): String = {
@@ -120,13 +119,16 @@ object PseudobinSerde {
 
       size + as
     }
-//    override def deserialize(data: Input): Maybe[List[A]] = {
+
+    override def deserialize(data: Input): Maybe[List[A]] = ???
+//  override def deserialize(data: Input): Maybe[List[A]] = {
 //      val Message_length: String = data.current(6)
 //      val Message_length_int: Int = Message_length.trim.toInt
 //      var listReuturn = List[A]
-//      for (i <- 1 to Message_length_int) {
-//          val a = data
-//      }
+//      for {
+//        val a => itemSerde.deserialize()
+//        string <- Try(message.substring(6))
+//      }yield(listReuturn, data.next(6 + Message_length_int))
 //    }
     // foldLeft
   }
