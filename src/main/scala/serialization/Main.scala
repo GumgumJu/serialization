@@ -30,8 +30,9 @@ object PseudobinSerde {
 
     override def deserialize(data: Input): Maybe[Int] = {
       val message : String = data.current(11)
-      val tryINT :Maybe[Int] = Try(message.trim.toInt,data)
-      tryINT
+      for {
+        int <- Try(message.trim.toInt)
+      } yield (int, data.next(11))
     }
   }
 
